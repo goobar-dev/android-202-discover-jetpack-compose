@@ -38,43 +38,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
-                    var planets by remember { mutableStateOf<List<PlanetDTO>>(emptyList()) }
-                    LaunchedEffect(this) {
-                        launch(Dispatchers.IO) {
-                            planets = SWAPINetworkClient.getPlanets().results
-                        }
-                    }
-
-                    if (planets.isEmpty()) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(modifier = Modifier.size(56.dp))
-                        }
-                    } else {
-                        LazyColumn() {
-                            items(planets) {
-                                Greeting(name = it.name)
-                            }
-                        }
-                    }
+                    StarWarsPlanetsNavigationGraph()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ComposeLabsTheme {
-        Greeting("Compose")
     }
 }

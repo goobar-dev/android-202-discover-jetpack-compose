@@ -72,3 +72,9 @@ Refactor the navigation graph configuration to use a custom type-safe routing im
     - Use the `printToLog()` method to view the semantics tree
 - Create a new test method named `versionInfoClickHandlerCalledWhenCardIsClicked()`
     - Validate that clicks on a list item are propagated to the click handler
+
+## Lesson 7 - Improving Compose Experience
+- Refactor `AndroidVersionsListScreen` to include a `AndroidVersionsList` composable that takes a `List<AndroidVersionsListViewModel.State.AndroidVersionViewItem>`
+- Write a preview composable for `AndroidVersionsListScreen`
+- Write a preview composable for `PreviewAndroidVersionsList` that uses a `PreviewParameterProvider` to generate previews for different sets of data
+- Create a multi-preview annotation and apply it to `PreviewAndroidVersionsListScreen()` to generate a multitude of previews across different device configurations

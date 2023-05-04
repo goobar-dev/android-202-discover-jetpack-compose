@@ -24,3 +24,28 @@ Make sure the demo project can be built and deployed
 - Set the `onClick` handler for the back icon so clicking back clears the currently selected item
 - Update `AndroidVersionInfo` to implement `Parcelable`
 - Update the declaration of `selectedItem` to use `rememberSaveable{}` to preserve state across configuration change
+
+## Lesson 4 - Navigation
+Start by setting up a basic navigation graph:
+
+- Create a new file `DemoNavigationGraph` and create a composable `DemoNavigationGraph`
+- Create a remembered `NavController` by calling `rememberNavController()`
+- Setup a `NavHost` with 2 composable destinations
+    - One route named `"versionsList"`
+    - One route named `"versionDetails/{apiVersion}"`
+    - The `versionDetails` route should configure the `apiVersion` argument to be of type `Int`
+- Update the `AndroidVersionListScreen` click handler to navigate to the details screen using the `NavController`
+- Parse the `apiVersion` nav argument from the `versionDetails` backstack entry and pass to the composable
+- Update the `AndroidVersionDetailsScreen` back click handler to pop the `NavController` backstack
+- Update `MainActivity` to call `DemoNavigationGraph` instead of `MainActivityContent`
+- Remove `HomeScreen.kt` and update `AndroidVersionListScreen` and `AndroidVersionDetailsScreen` to include their own `Scaffold`
+
+Refactor the navigation graph configuration to use a custom type-safe routing implementation:
+- Add `kotlinx.serialization` to the project and add `@Serializable` annotation to `AndroidVersionInfo`
+- Create a file named `NavigationDestination.kt`
+- Create a `NavigationArgs` interface to apply to classes that will be passed along with navigation routes
+- Create a `NavigationDestination` interface with `name` and `route` properties
+- Create an `ArgumentDestination` interface extending `NavigationDestination`
+- Create extension methods on `ArgumentDestination` named `createRouteWithArgs()` and `retrieveArgs()`
+- Define object classes to represent our `VersionsList` and `VersionDetails` destinations
+- Refactor `DemoNavigationGraph` to use these new type-safe destinations

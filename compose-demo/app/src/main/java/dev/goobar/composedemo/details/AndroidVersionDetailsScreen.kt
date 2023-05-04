@@ -19,12 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.goobar.composedemo.R
-import dev.goobar.composedemo.data.AndroidVersionsRepository
+import dev.goobar.composedemo.data.AndroidVersionInfo
 
 @Composable
-internal fun AndroidVersionDetailsScreen(apiVersion: Int, onBack: () -> Unit) {
-    val info = AndroidVersionsRepository.data.first { it.apiVersion == apiVersion }
-
+internal fun AndroidVersionDetailsScreen(info: AndroidVersionInfo, onBack: () -> Unit) {
     BackHandler(enabled = true, onBack = onBack)
 
     Scaffold(

@@ -9,9 +9,12 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dev.goobar.composelabs.domain.NetworkPlanetRepository
 import dev.goobar.composelabs.network.PlanetDTO
 import dev.goobar.composelabs.network.SWAPINetworkClient
 import dev.goobar.composelabs.network.toPlanet
+import dev.goobar.composelabs.planetslist.PlanetListViewModel
+import dev.goobar.composelabs.planetslist.PlanetsListScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -19,16 +22,9 @@ import kotlinx.coroutines.launch
 internal fun StarWarsPlanetsNavigationGraph() {
     val navController = rememberNavController()
 
-    var planets by remember { mutableStateOf<List<PlanetDTO>>(emptyList()) }
-    LaunchedEffect(Unit) {
-        launch(Dispatchers.IO) {
-            planets = SWAPINetworkClient.getPlanets().results
-        }
-    }
-
     NavHost(navController = navController, startDestination = StarWarsPlanetsNavigationDestinations.PlanetsList.route) {
         composable(StarWarsPlanetsNavigationDestinations.PlanetsList.route) {
-            PlanetsListScreen(planets.map { it.toPlanet() }) { planet ->
+            PlanetsListScreen(PlanetListViewModel(NetworkPlanetRepository)) { planet ->
                 navController.navigate(StarWarsPlanetsNavigationDestinations.PlanetDetails.createRouteWithArgs(planet))
             }
         }

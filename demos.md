@@ -78,3 +78,11 @@ Refactor the navigation graph configuration to use a custom type-safe routing im
 - Write a preview composable for `AndroidVersionsListScreen`
 - Write a preview composable for `PreviewAndroidVersionsList` that uses a `PreviewParameterProvider` to generate previews for different sets of data
 - Create a multi-preview annotation and apply it to `PreviewAndroidVersionsListScreen()` to generate a multitude of previews across different device configurations
+
+## Lesson 8 - Compose Performance
+- Use Android Studio's Layout Inspector to examine recomposition counts for the app
+- Modify app to simulate a "heartbeat" the generates more frequent recompositions
+- Integrate Compose Compiler metrics
+- Generate a Compose Compiler metrics report
+- Examine the report to understand what could be causing recompositions
+- Update the `State` classes and `AndroidVersionsListScreen` composables to be stable and skippable

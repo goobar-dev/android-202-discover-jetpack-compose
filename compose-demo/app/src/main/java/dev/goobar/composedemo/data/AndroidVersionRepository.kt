@@ -1,4 +1,4 @@
-package dev.goobar.composedemo
+package dev.goobar.composedemo.data
 
 object AndroidVersionsRepository {
 

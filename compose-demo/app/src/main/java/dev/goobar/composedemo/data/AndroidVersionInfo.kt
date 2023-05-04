@@ -1,4 +1,4 @@
-package dev.goobar.composedemo
+package dev.goobar.composedemo.data
 
 import android.os.Parcelable
 import androidx.versionedparcelable.VersionedParcelable

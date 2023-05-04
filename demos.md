@@ -60,3 +60,15 @@ Refactor the navigation graph configuration to use a custom type-safe routing im
 - Add a `StateFlow` to `AndroidVersionDetailsViewModel` to expose an instance of `State`
 - Update composables to observe data from the `ViewModel`s
 - Implement a sort capability in `AndroidVersionsListScreen` using the `ViewModel` to track sort state and sort the items
+
+## Lesson 6 - Testing Composables
+- Create a new test class `AndroidVersionsListTest` in the `androidTest` source set
+- Add a new test rule using `createComposeRule()`
+- Create new test method named `versionsListDisplayedOnHomeScreenLoad()`
+    - Validate that a composable with `testTag = "Versions List"` exists in the tree
+- Create new test method named `versionsListDisplaysFirstVersionInfo()`
+    - Validate that the first item in the list matches what is expected from the repository
+- Create a new test method named `printTreeToLog()`
+    - Use the `printToLog()` method to view the semantics tree
+- Create a new test method named `versionInfoClickHandlerCalledWhenCardIsClicked()`
+    - Validate that clicks on a list item are propagated to the click handler

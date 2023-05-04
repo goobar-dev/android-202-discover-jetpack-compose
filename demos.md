@@ -49,3 +49,14 @@ Refactor the navigation graph configuration to use a custom type-safe routing im
 - Create extension methods on `ArgumentDestination` named `createRouteWithArgs()` and `retrieveArgs()`
 - Define object classes to represent our `VersionsList` and `VersionDetails` destinations
 - Refactor `DemoNavigationGraph` to use these new type-safe destinations
+
+## Lesson 5 - MVVM & Compose
+- Create an `AndroidVersionsListViewModel`
+- Within `AndroidVersionsListViewModel` create a `State` data class that holds a `List<AndroidVersionViewItem>`
+- Create an `AndroidVersionDetailsViewModel`
+- Within `AndroidVersionDetailsViewModel` create a `State` data class that holds the display details
+- Update `AndoridVersionsListScreen` to take a `AndroidVersionsListViewModel` as a parameter
+- Add a `StateFlow` to `AndroidVersionsListViewModel` to expose an instance of `State`
+- Add a `StateFlow` to `AndroidVersionDetailsViewModel` to expose an instance of `State`
+- Update composables to observe data from the `ViewModel`s
+- Implement a sort capability in `AndroidVersionsListScreen` using the `ViewModel` to track sort state and sort the items

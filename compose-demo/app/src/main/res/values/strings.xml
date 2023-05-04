@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Compose Demo</string>
+    <string name="android_icon_content_description">Android Icon</string>
 </resources>

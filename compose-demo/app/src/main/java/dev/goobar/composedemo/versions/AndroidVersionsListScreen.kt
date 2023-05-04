@@ -50,6 +50,9 @@ import dev.goobar.composedemo.R
 import dev.goobar.composedemo.data.AndroidVersionInfo
 import dev.goobar.composedemo.data.AndroidVersionsRepository
 import dev.goobar.composedemo.ui.theme.ComposeDemoTheme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun AndroidVersionsListScreen(viewModel: AndroidVersionsListViewModel = viewModel(), onClick: (AndroidVersionInfo) -> Unit) {
@@ -75,7 +78,7 @@ internal fun AndroidVersionsListScreen(viewModel: AndroidVersionsListViewModel =
 
 @Composable
 private fun AndroidVersionsList(
-    viewItems: List<AndroidVersionsListViewModel.State.AndroidVersionViewItem>,
+    viewItems: ImmutableList<AndroidVersionsListViewModel.State.AndroidVersionViewItem>,
     onClick: (AndroidVersionInfo) -> Unit
 ) {
     LazyColumn(
@@ -85,6 +88,7 @@ private fun AndroidVersionsList(
     ) {
         itemsIndexed(
             items = viewItems,
+            key = { index, viewItem -> "$index ${viewItem.info.apiVersion}" }
         ) { index, viewItem ->
             AndroidVersionInfoCard(viewItem, onClick)
         }
@@ -169,7 +173,7 @@ internal fun PreviewAndroidVersionsListScreen() {
 @Composable
 internal fun PreviewAndroidVersionsList(
     @PreviewParameter(AndroidVersionsListPreviewParameterProvider::class)
-    items: List<AndroidVersionsListViewModel.State.AndroidVersionViewItem>
+    items: ImmutableList<AndroidVersionsListViewModel.State.AndroidVersionViewItem>
 ) {
     ComposeDemoTheme() {
         AndroidVersionsList(viewItems = items, onClick = {})
@@ -177,10 +181,10 @@ internal fun PreviewAndroidVersionsList(
 }
 
 private class AndroidVersionsListPreviewParameterProvider
-    : PreviewParameterProvider<List<AndroidVersionsListViewModel.State.AndroidVersionViewItem>> {
-    override val values: Sequence<List<AndroidVersionsListViewModel.State.AndroidVersionViewItem>>
+    : PreviewParameterProvider<ImmutableList<AndroidVersionsListViewModel.State.AndroidVersionViewItem>> {
+    override val values: Sequence<ImmutableList<AndroidVersionsListViewModel.State.AndroidVersionViewItem>>
         get() = sequenceOf(
-            emptyList(),
+            immutableListOf(),
             AndroidVersionsRepository.data.map { info ->
                 AndroidVersionsListViewModel.State.AndroidVersionViewItem(
                     title = info.publicName,
@@ -188,7 +192,7 @@ private class AndroidVersionsListPreviewParameterProvider
                     description = info.details,
                     info = info
                 )
-            },
+            }.toImmutableList(),
             AndroidVersionsRepository.data.map { info ->
                 AndroidVersionsListViewModel.State.AndroidVersionViewItem(
                     title = info.publicName,
@@ -196,6 +200,6 @@ private class AndroidVersionsListPreviewParameterProvider
                     description = info.details,
                     info = info
                 )
-            }.take(2)
+            }.take(2).toImmutableList()
         )
 }

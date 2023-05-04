@@ -16,16 +16,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,20 +44,30 @@ import dev.goobar.composedemo.data.AndroidVersionInfo
 
 @Composable
 internal fun AndroidVersionsListScreen(viewModel: AndroidVersionsListViewModel = viewModel(), onClick: (AndroidVersionInfo) -> Unit) {
-    val versionsListState by viewModel.versionsListState
+    val versionsListState by viewModel.state.collectAsState()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Hello Jetpack Compose") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text("Hello Jetpack Compose") },
+                actions = {
+                    IconButton(onClick = viewModel::onSortClicked) {
+                        Icon(painter = painterResource(id = R.drawable.ic_sort), contentDescription = "Sort")
+                    }
+                }
+            )
+        }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             LazyColumn(
                 contentPadding = PaddingValues(20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(
-                    items = versionsListState,
-                    key = { info -> info.apiVersion }) { info ->
-                    AndroidVersionInfoCard(info, onClick)
+                itemsIndexed(
+                    items = versionsListState.versionsList,
+                    key = { index, viewItem -> "$index ${viewItem.info.apiVersion}" }
+                ) { index, viewItem ->
+                    AndroidVersionInfoCard(viewItem, onClick)
                 }
             }
         }
@@ -63,16 +76,16 @@ internal fun AndroidVersionsListScreen(viewModel: AndroidVersionsListViewModel =
 
 @Composable
 private fun AndroidVersionInfoCard(
-    info: AndroidVersionInfo,
+    viewItem: AndroidVersionsListViewModel.State.AndroidVersionViewItem,
     onClick: (AndroidVersionInfo) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 120.dp)
-            .clickable { onClick(info) }
+            .clickable { onClick(viewItem.info) }
     ) {
-        var isDetailExpanded by rememberSaveable(info.apiVersion) { mutableStateOf(false) }
+        var isDetailExpanded by rememberSaveable(viewItem.info.apiVersion) { mutableStateOf(false) }
 
         Column(modifier = Modifier.padding(20.dp)) {
             Row(
@@ -88,7 +101,7 @@ private fun AndroidVersionInfoCard(
                     Row {
                         Text(
                             modifier = Modifier.weight(1f),
-                            text = info.publicName, style = MaterialTheme.typography.headlineMedium
+                            text = viewItem.title, style = MaterialTheme.typography.headlineMedium
                         )
                         IconButton(onClick = { isDetailExpanded = !isDetailExpanded }) {
                             Icon(
@@ -97,14 +110,14 @@ private fun AndroidVersionInfoCard(
                             )
                         }
                     }
-                    Text(text = "${info.codename} - API ${info.apiVersion}")
+                    Text(viewItem.subtitle)
                 }
             }
 
             AnimatedVisibility(visible = isDetailExpanded) {
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
-                    text = info.details.ifBlank { "No details available" },
+                    text = viewItem.description.ifBlank { "No details available" },
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )

@@ -1,17 +1,13 @@
 package dev.goobar.composedemo.versions
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dev.goobar.composedemo.data.AndroidVersionInfo
 import dev.goobar.composedemo.data.AndroidVersionsRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.flow.update
 
 enum class Sort {
     ASCENDING, DESCENDING
@@ -21,36 +17,15 @@ class AndroidVersionsListViewModel : ViewModel() {
 
     private var sort = Sort.ASCENDING
 
-    private val _state = flow {
-        val items = AndroidVersionsRepository.data
-        val itemsToReturn = mutableListOf<AndroidVersionInfo>()
-
-        items.forEach { info ->
-            delay(4000)
-            itemsToReturn.add(info)
-            emit(
-                State(
-                    itemsToReturn.map { info ->
-                        State.AndroidVersionViewItem(
-                            title = info.publicName,
-                            subtitle = "${info.codename} - API ${info.apiVersion}",
-                            description = info.details,
-                            info = info
-                        )
-                    }
-                )
-            )
-        }
-    }
-    val state = _state.stateIn(viewModelScope + Dispatchers.Main.immediate, SharingStarted.WhileSubscribed(3_000), State(
-        emptyList()))
+    private val _state = MutableStateFlow(generateState())
+    val state = _state.asStateFlow()
 
     fun onSortClicked() {
-//        sort = when (sort) {
-//            Sort.ASCENDING -> Sort.DESCENDING
-//            Sort.DESCENDING -> Sort.ASCENDING
-//        }
-//        _state.update { generateState() }
+        sort = when (sort) {
+            Sort.ASCENDING -> Sort.DESCENDING
+            Sort.DESCENDING -> Sort.ASCENDING
+        }
+        _state.update { generateState() }
     }
 
     private fun generateState() = State(
@@ -64,10 +39,10 @@ class AndroidVersionsListViewModel : ViewModel() {
                 description = info.details,
                 info = info
             )
-        }
+        }.toImmutableList()
     )
 
-    data class State(val versionsList: List<AndroidVersionViewItem>) {
+    data class State(val versionsList: ImmutableList<AndroidVersionViewItem>) {
         data class AndroidVersionViewItem(
             val title: String,
             val subtitle: String,

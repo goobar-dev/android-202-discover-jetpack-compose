@@ -3,6 +3,7 @@
 package dev.goobar.composedemo.versions
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +31,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -38,10 +38,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.goobar.composedemo.R
 import dev.goobar.composedemo.data.AndroidVersionInfo
-import dev.goobar.composedemo.data.AndroidVersionsRepository
 
 @Composable
-internal fun AndroidVersionsListScreen(onClick: (AndroidVersionInfo) -> Unit) {
+internal fun AndroidVersionsListScreen(viewModel: AndroidVersionsListViewModel = viewModel(), onClick: (AndroidVersionInfo) -> Unit) {
+    val versionsListState by viewModel.versionsListState
+
     Scaffold(
         topBar = { TopAppBar(title = { Text("Hello Jetpack Compose") }) }
     ) { paddingValues ->
@@ -51,7 +52,7 @@ internal fun AndroidVersionsListScreen(onClick: (AndroidVersionInfo) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(
-                    items = AndroidVersionsRepository.data,
+                    items = versionsListState,
                     key = { info -> info.apiVersion }) { info ->
                     AndroidVersionInfoCard(info, onClick)
                 }

@@ -30,4 +30,5 @@ junit = { module = "junit:junit", version.ref = "junitVersion" }
 
 [plugins]
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlinVersion" }
 android-application = { id = "com.android.application",version.ref = "androidGradlePluginVersion" }

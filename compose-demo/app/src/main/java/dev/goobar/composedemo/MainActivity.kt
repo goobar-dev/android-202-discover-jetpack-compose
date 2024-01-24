@@ -3,8 +3,8 @@
 package dev.goobar.composedemo
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,15 +22,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -54,22 +59,29 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun MainActivityContent() {
+    var selectedItem by rememberSaveable { mutableStateOf<AndroidVersionInfo?>(null) }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Compose Demo") })
+            when (val currentItem = selectedItem) {
+                null -> {
+                    AndroidVersionListAppBar()
+                }
+                else -> {
+                    AndroidVersionDetailsAppBar(info = currentItem) {
+                        selectedItem = null
+                    }
+                }
+            }
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            val context = LocalContext.current
-            LazyColumn(
-                contentPadding = PaddingValues(20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(items = AndroidVersionsRepository.data, key = { info -> info.apiVersion }) { info ->
-                    AndroidVersionInfoCard(info) { clickedInfo ->
-                        Toast.makeText(context, "Clicked ${clickedInfo.publicName}", Toast.LENGTH_SHORT).show()
-                    }
+            when (val currentItem = selectedItem) {
+                null -> AndroidVersionsList() { clickedInfo ->
+                    selectedItem = clickedInfo
+                }
+                else -> AndroidVersionDetails(currentItem) {
+                    selectedItem = null
                 }
             }
         }
@@ -107,5 +119,60 @@ private fun AndroidVersionInfoCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun AndroidVersionListAppBar() {
+    TopAppBar(title = { Text("Hello Jetpack Compose") })
+}
+
+@Composable
+private fun AndroidVersionsList(onClick: (AndroidVersionInfo) -> Unit) {
+    LazyColumn(
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(
+            items = AndroidVersionsRepository.data,
+            key = { info -> info.apiVersion }) { info ->
+            AndroidVersionInfoCard(info, onClick)
+        }
+    }
+}
+
+@Composable
+private fun AndroidVersionDetailsAppBar(info: AndroidVersionInfo, onBack: () -> Unit) {
+    TopAppBar(
+        title = {
+            Text(
+                text = info.publicName,
+                modifier = Modifier.padding(start = 20.dp)
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onBack) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = "Back button"
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun AndroidVersionDetails(info: AndroidVersionInfo, onBack: () -> Unit) {
+    BackHandler(enabled = true, onBack = onBack)
+    Column(modifier = Modifier.padding(20.dp)) {
+        Text(text = info.publicName, style = MaterialTheme.typography.displayMedium)
+        Text(text = "${info.codename} - API ${info.apiVersion}", style = MaterialTheme.typography.headlineSmall)
+        Text(
+            modifier = Modifier.padding(top = 20.dp),
+            text = info.details,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+
     }
 }

@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.ir.util.toIrConst
 plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 kotlin {

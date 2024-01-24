@@ -3,6 +3,7 @@
 ## Observe the project dependencies
 - Open the `compose-labs` project in Android Studio
 - Sync the project in Android Studio
+- Open the `gradle/libs.versions.toml` file and review the declared dependencies
 - Open the root-level `build.gradle` file and observe specified plugins
 
 **💡 What version of the Android Gradle Plugin is the project using?**
@@ -42,11 +43,8 @@ normal function?**
 
 ## Modify a Composable
 - Change the text based to the `Text` Composable, and redeploy to observe the new output
-- With `MainActivity.kt` open, select the `Split` or `Design` view from the upper end corner of the editor window
-- Observe the Composable preview view
-- Change the text passed to the `Greeting` Composable within the preview
-
-**💡 Did you notice the preview text updated automatically?**
+- Change the `Greeting` Composable to take a `greeting: String` parameter with a default value of `"Hello"`
+- Experiment with calling `Greeting` multiple times with different `greeting` and `name` parameters
 
 - Explore the rest of the project
 

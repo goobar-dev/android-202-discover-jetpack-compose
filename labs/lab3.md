@@ -2,9 +2,13 @@
 
 ## Deliverables
 Clicking a planet list item should open a details screen
-- When viewing the details screen, their should be a back button that navigates back to the previous screen
+- When viewing the details screen, there should be a back button that navigates back to the previous screen
 - Navigation between screens should be done using a `NavHost` and `NavController`
 - The app should preserve state across configuration change
+
+## Challenges
+- Add an enter or exit animation when navigating to, or from, the details screen
+- Add additional details to each `Planet` list item that animates in, and out, when an "info" icon is tapped
 
 ## Dev Notes
 

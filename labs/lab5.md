@@ -10,13 +10,16 @@
 
 💡 Are any of our UI-related classes marked as `unstable`?
 
-💡 Are any of your composables not skippable?
+💡 Are any of your Composables not skippable?
 
 - Fix up any issues you find by using tools such as 
     - kotlinx.immutable collections
     - `@Stable` or `@Immutable` annotations
     - moving UI data holders into the same module as the Compose compiler
     - using method references or remembered lambdas for click handlers
+
+## Challenges
+- If your app is not recomposing excessively, great job! Try changing that by purposely introducing recompositions by making things unstable, not using list item keys, etd
 
 ## Dev Notes
 

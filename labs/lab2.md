@@ -7,6 +7,9 @@ Build an app that displays a list of Star Wars planets and allows a user to sele
 - Clicking a planet list item should display a `Toast` that displays the planet name
 - Customize your theme with custom colors, shapes, or typography
 
+## Challenges
+- Snow a `Snackbar` instead of a `Toast` when a list item is clicked
+
 ## Dev Notes
 
 ### Where can you get Star Wars planet data?

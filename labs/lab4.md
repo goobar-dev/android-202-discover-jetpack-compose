@@ -1,7 +1,7 @@
 # Lab 4 - Refactor and Test Compose UI Architecture
 
 ## Deliverables
-- Write a Compose test that validates that the planet list is drawn with the expected items.
+- Write a Compose test that validates that `PlanetListScreen` draws the expected items that are passed to it.
 - Then, refactor you code so the list of planets if observed from a `ViewModel` using an MVVM pattern.
 - Use your test to ensure the refactoring didn't impact app behavior
 

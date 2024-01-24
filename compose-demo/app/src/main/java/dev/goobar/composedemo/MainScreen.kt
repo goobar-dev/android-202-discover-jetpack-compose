@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import dev.goobar.composedemo.data.AndroidVersionInfo
+import dev.goobar.composedemo.data.AndroidVersionsRepository
 import dev.goobar.composedemo.versiondetails.AndroidVersionDetailsAppBar
 import dev.goobar.composedemo.versiondetails.AndroidVersionDetailsScreen
 import dev.goobar.composedemo.versionslist.AndroidVersionListAppBar
@@ -35,7 +36,7 @@ fun MainScreen() {
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             when (val currentItem = selectedItem) {
-                null -> AndroidVersionsListScreen() { clickedInfo ->
+                null -> AndroidVersionsListScreen(AndroidVersionsRepository.data) { clickedInfo ->
                     selectedItem = clickedInfo
                 }
                 else -> AndroidVersionDetailsScreen(currentItem) {

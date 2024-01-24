@@ -24,10 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import dev.goobar.composedemo.R
 import dev.goobar.composedemo.data.AndroidVersionInfo
 import dev.goobar.composedemo.data.AndroidVersionsRepository
+import dev.goobar.composedemo.ui.theme.ComposeDemoTheme
+import dev.goobar.composedemo.ui.tooling.StandardPreview
 
 @Composable
 fun AndroidVersionListAppBar() {
@@ -35,13 +39,15 @@ fun AndroidVersionListAppBar() {
 }
 
 @Composable
-fun AndroidVersionsListScreen(onClick: (AndroidVersionInfo) -> Unit) {
+fun AndroidVersionsListScreen(
+    infos: List<AndroidVersionInfo>,
+    onClick: (AndroidVersionInfo) -> Unit) {
     LazyColumn(
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(
-            items = AndroidVersionsRepository.data,
+            items = infos,
             key = { info -> info.apiVersion }) { info ->
             AndroidVersionInfoCard(info, onClick)
         }
@@ -79,5 +85,26 @@ private fun AndroidVersionInfoCard(
                 )
             }
         }
+    }
+}
+
+private class AndroidVersionInfoProvider : PreviewParameterProvider<List<AndroidVersionInfo>> {
+    override val values: Sequence<List<AndroidVersionInfo>>
+        get() = sequenceOf(
+            emptyList(),
+            AndroidVersionsRepository.data.take(1),
+            AndroidVersionsRepository.data.take(2),
+            AndroidVersionsRepository.data,
+        )
+
+}
+
+@StandardPreview
+@Composable
+private fun Preview_AndroidVersionsListScreen(
+    @PreviewParameter(AndroidVersionInfoProvider::class) infos: List<AndroidVersionInfo>
+) {
+    ComposeDemoTheme {
+        AndroidVersionsListScreen(infos, onClick = {})
     }
 }

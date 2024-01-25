@@ -1,6 +1,7 @@
 package dev.goobar.composelabs
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -19,8 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import dev.goobar.composelabs.network.PlanetDTO
 import dev.goobar.composelabs.network.SWAPINetworkClient
+import dev.goobar.composelabs.network.toPlanet
+import dev.goobar.composelabs.planetslist.PlanetsListScreen
 import dev.goobar.composelabs.ui.theme.ComposeLabsTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,24 +36,17 @@ class MainActivity : ComponentActivity() {
             ComposeLabsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+
                     var planets by remember { mutableStateOf<List<PlanetDTO>>(emptyList()) }
-                    LaunchedEffect(this) {
+                    LaunchedEffect(Unit) {
                         launch(Dispatchers.IO) {
                             planets = SWAPINetworkClient.getPlanets().results
                         }
                     }
 
-                    if (planets.isEmpty()) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
-                        }
-                    } else {
-                        LazyColumn() {
-                            items(planets) {
-                                PlanetListItem(name = it.name)
-                            }
-
-                        }
+                    val context = LocalContext.current
+                    PlanetsListScreen(planets = planets.map { it.toPlanet() }) { planet ->
+                        Toast.makeText(context, planet.name, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

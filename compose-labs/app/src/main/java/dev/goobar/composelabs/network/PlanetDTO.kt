@@ -1,5 +1,6 @@
 package dev.goobar.composelabs.network
 
+import dev.goobar.composelabs.domain.Planet
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,4 +23,15 @@ data class PlanetDTO(
     val population: String,
 
     val url: String
+)
+
+fun PlanetDTO.toPlanet() = Planet(
+    name,
+    rotationPeriod,
+    orbitalPeriod,
+    diameter,
+    climate,
+    gravity,
+    population,
+    url
 )

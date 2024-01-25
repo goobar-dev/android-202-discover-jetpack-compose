@@ -6,8 +6,8 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 
 data class ScreenConfiguration(
-    val isCompact: Boolean,
-    val orientation: Orientation
+    val isCompact: Boolean = true,
+    val orientation: Orientation = Orientation.VERTICAL
 ) {
     enum class Orientation {
         UNDEFINED,

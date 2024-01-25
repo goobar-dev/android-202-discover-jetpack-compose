@@ -32,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -88,7 +89,7 @@ private fun AndroidVersionsListContent(
     ) {
         if (isVertical) {
             LazyColumn(
-                modifier = Modifier.padding(it).fillMaxSize(1f),
+                modifier = Modifier.padding(it).fillMaxSize(1f).testTag("Versions List"),
                 contentPadding = PaddingValues(20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -101,7 +102,7 @@ private fun AndroidVersionsListContent(
             }
         } else {
             LazyRow(
-                modifier = Modifier.padding(it).fillMaxSize(1f),
+                modifier = Modifier.padding(it).fillMaxSize(1f).testTag("Versions List"),
                 contentPadding = PaddingValues(20.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {

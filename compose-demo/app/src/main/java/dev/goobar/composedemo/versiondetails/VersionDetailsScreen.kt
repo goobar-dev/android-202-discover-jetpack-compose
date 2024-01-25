@@ -45,9 +45,7 @@ fun AndroidVersionDetailsAppBar(info: AndroidVersionInfo, onBack: () -> Unit) {
 }
 
 @Composable
-fun AndroidVersionDetailsScreen(apiVersion: Int, onBack: () -> Unit) {
-    val info = AndroidVersionsRepository.data.first { it.apiVersion == apiVersion }
-
+fun AndroidVersionDetailsScreen(info: AndroidVersionInfo, onBack: () -> Unit) {
     BackHandler(enabled = true, onBack = onBack)
     val layoutDirection = LocalLayoutDirection.current
 

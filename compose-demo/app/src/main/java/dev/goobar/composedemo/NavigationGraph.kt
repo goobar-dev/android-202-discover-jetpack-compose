@@ -1,7 +1,9 @@
 package dev.goobar.composedemo
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,7 +21,21 @@ internal fun ComposeDemoNavigationGraph() {
                 navController.navigate(DemoNavigationDestinations.VersionDetails.createRouteWithArgs(info))
             }
         }
-        composable(route = DemoNavigationDestinations.VersionDetails.route) { entry ->
+        composable(
+            route = DemoNavigationDestinations.VersionDetails.route,
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(durationMillis = 300, easing = FastOutLinearInEasing)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(durationMillis = 300, easing = FastOutLinearInEasing)
+                )
+            }
+        ) { entry ->
             val info = DemoNavigationDestinations.VersionDetails.retrieveArgs(entry.arguments)
             AndroidVersionDetailsScreen(info) {
                 navController.popBackStack()

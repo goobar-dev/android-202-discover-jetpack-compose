@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.goobar.composedemo.versiondetails.AndroidVersionDetailsScreen
+import dev.goobar.composedemo.versiondetails.AndroidVersionDetailsViewModel
 import dev.goobar.composedemo.versionslist.AndroidVersionsListScreen
 
 @Composable
@@ -36,7 +37,7 @@ internal fun ComposeDemoNavigationGraph() {
             }
         ) { entry ->
             val info = DemoNavigationDestinations.VersionDetails.retrieveArgs(entry.arguments)
-            AndroidVersionDetailsScreen(info) {
+            AndroidVersionDetailsScreen(AndroidVersionDetailsViewModel(info)) {
                 navController.popBackStack()
             }
         }

@@ -15,21 +15,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.goobar.composedemo.R
-import dev.goobar.composedemo.data.AndroidVersionInfo
-import dev.goobar.composedemo.data.AndroidVersionsRepository
 
 @Composable
-fun AndroidVersionDetailsAppBar(info: AndroidVersionInfo, onBack: () -> Unit) {
+fun AndroidVersionDetailsAppBar(title: String, onBack: () -> Unit) {
     TopAppBar(
         title = {
             Text(
-                text = info.publicName,
+                text = title,
                 modifier = Modifier.padding(start = 20.dp)
             )
         },
@@ -45,13 +45,17 @@ fun AndroidVersionDetailsAppBar(info: AndroidVersionInfo, onBack: () -> Unit) {
 }
 
 @Composable
-fun AndroidVersionDetailsScreen(info: AndroidVersionInfo, onBack: () -> Unit) {
+fun AndroidVersionDetailsScreen(
+    viewModel: AndroidVersionDetailsViewModel,
+    onBack: () -> Unit
+) {
     BackHandler(enabled = true, onBack = onBack)
     val layoutDirection = LocalLayoutDirection.current
+    val state: AndroidVersionDetailsViewModel.State by viewModel.state.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
-            AndroidVersionDetailsAppBar(info, onBack)
+            AndroidVersionDetailsAppBar(state.title, onBack)
         }
     ) {
         Column(
@@ -62,11 +66,11 @@ fun AndroidVersionDetailsScreen(info: AndroidVersionInfo, onBack: () -> Unit) {
                 bottom = 20.dp + it.calculateBottomPadding()
             )
         ) {
-            Text(text = info.publicName, style = MaterialTheme.typography.displayMedium)
-            Text(text = "${info.codename} - API ${info.apiVersion}", style = MaterialTheme.typography.headlineSmall)
+            Text(text = state.title, style = MaterialTheme.typography.displayMedium)
+            Text(text = state.subtitle, style = MaterialTheme.typography.headlineSmall)
             Text(
                 modifier = Modifier.padding(top = 20.dp),
-                text = info.details,
+                text = state.description,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )

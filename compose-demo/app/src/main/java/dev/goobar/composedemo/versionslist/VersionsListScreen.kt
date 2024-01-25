@@ -2,6 +2,7 @@
 
 package dev.goobar.composedemo.versionslist
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,14 +15,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,6 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.goobar.composedemo.R
 import dev.goobar.composedemo.data.AndroidVersionInfo
@@ -37,8 +45,15 @@ import dev.goobar.composedemo.ui.theme.ComposeDemoTheme
 import dev.goobar.composedemo.ui.tooling.StandardPreview
 
 @Composable
-fun AndroidVersionListAppBar() {
-    TopAppBar(title = { Text("Hello Jetpack Compose") })
+fun AndroidVersionListAppBar(onSortClick: () -> Unit) {
+    TopAppBar(
+        title = { Text("Hello Jetpack Compose") },
+        actions = {
+            IconButton(onClick = onSortClick) {
+                Icon(painter = painterResource(id = R.drawable.ic_sort), contentDescription = "Sort")
+            }
+        }
+    )
 }
 
 @Composable
@@ -46,19 +61,23 @@ fun AndroidVersionsListScreen(
     viewModel: AndroidVersionsListViewModel = viewModel(),
     onClick: (AndroidVersionInfo) -> Unit) {
 
-    val versionsListState by viewModel.versionsListState
+    val versionsListState by viewModel.state.collectAsStateWithLifecycle()
 
-    AndroidVersionsListContent(infos = versionsListState, onClick = onClick)
+    AndroidVersionsListContent(
+        viewItems = versionsListState.versionsList,
+        onSortClick =  viewModel::onSortClicked,
+        onClick = onClick)
 }
 
 @Composable
 private fun AndroidVersionsListContent(
-    infos: List<AndroidVersionInfo>,
+    viewItems: List<AndroidVersionsListViewModel.State.AndroidVersionViewItem>,
+    onSortClick: () -> Unit,
     onClick: (AndroidVersionInfo) -> Unit
 ) {
     Scaffold(
         topBar = {
-            AndroidVersionListAppBar()
+            AndroidVersionListAppBar(onSortClick)
         }
     ) {
         LazyColumn(
@@ -66,10 +85,11 @@ private fun AndroidVersionsListContent(
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(
-                items = infos,
-                key = { info -> info.apiVersion }) { info ->
-                AndroidVersionInfoCard(info, onClick)
+            itemsIndexed(
+                items = viewItems,
+                key = { index, viewItem -> "$index ${viewItem.info.apiVersion}" }
+            ) { index, viewItem ->
+                AndroidVersionInfoCard(viewItem, onClick)
             }
         }
     }
@@ -77,14 +97,16 @@ private fun AndroidVersionsListContent(
 
 @Composable
 private fun AndroidVersionInfoCard(
-    info: AndroidVersionInfo,
+    viewItem: AndroidVersionsListViewModel.State.AndroidVersionViewItem,
     onClick: (AndroidVersionInfo) -> Unit
 ) {
+    var isDetailExpanded by rememberSaveable(viewItem.info.apiVersion) { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 120.dp)
-            .clickable { onClick(info) }
+            .clickable { onClick(viewItem.info) }
     ) {
         Row(
             modifier = Modifier.padding(20.dp),
@@ -96,14 +118,30 @@ private fun AndroidVersionInfoCard(
                 contentDescription = "Android icon"
             )
             Column(modifier = Modifier.padding(start = 20.dp)) {
-                Text(text = info.publicName, style = MaterialTheme.typography.headlineMedium)
-                Text(text = "${info.codename} - API ${info.apiVersion}")
-                Text(
-                    modifier = Modifier.padding(top = 4.dp),
-                    text = info.details,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = viewItem.title, style = MaterialTheme.typography.headlineMedium)
+
+                    if (viewItem.description.isNotBlank()) {
+                        IconButton(onClick = { isDetailExpanded = !isDetailExpanded }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_info),
+                                contentDescription = "Info"
+                            )
+                        }
+                    }
+                }
+                Text(text = viewItem.subtitle)
+
+                AnimatedVisibility(visible = isDetailExpanded) {
+                    Text(
+                        modifier = Modifier.padding(top = 4.dp),
+                        text = viewItem.description,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }
@@ -126,6 +164,6 @@ private fun Preview_AndroidVersionsListScreen(
     @PreviewParameter(AndroidVersionInfoProvider::class) infos: List<AndroidVersionInfo>
 ) {
     ComposeDemoTheme {
-        AndroidVersionsListContent(infos, onClick = {})
+        AndroidVersionsListContent(infos.map { it.toViewItem() }, onSortClick = {}, onClick = {})
     }
 }

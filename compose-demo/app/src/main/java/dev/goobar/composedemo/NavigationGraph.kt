@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dev.goobar.composedemo.data.AndroidVersionsRepository
 import dev.goobar.composedemo.versiondetails.AndroidVersionDetailsScreen
 import dev.goobar.composedemo.versionslist.AndroidVersionsListScreen
 
@@ -17,7 +16,7 @@ internal fun ComposeDemoNavigationGraph() {
 
     NavHost(navController = navController, startDestination = DemoNavigationDestinations.VersionsList.route) {
         composable(DemoNavigationDestinations.VersionsList.route) {
-            AndroidVersionsListScreen(AndroidVersionsRepository.data) { info ->
+            AndroidVersionsListScreen { info ->
                 navController.navigate(DemoNavigationDestinations.VersionDetails.createRouteWithArgs(info))
             }
         }

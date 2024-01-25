@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.goobar.composedemo.R
 import dev.goobar.composedemo.data.AndroidVersionInfo
 import dev.goobar.composedemo.data.AndroidVersionsRepository
@@ -41,9 +43,19 @@ fun AndroidVersionListAppBar() {
 
 @Composable
 fun AndroidVersionsListScreen(
-    infos: List<AndroidVersionInfo>,
+    viewModel: AndroidVersionsListViewModel = viewModel(),
     onClick: (AndroidVersionInfo) -> Unit) {
 
+    val versionsListState by viewModel.versionsListState
+
+    AndroidVersionsListContent(infos = versionsListState, onClick = onClick)
+}
+
+@Composable
+private fun AndroidVersionsListContent(
+    infos: List<AndroidVersionInfo>,
+    onClick: (AndroidVersionInfo) -> Unit
+) {
     Scaffold(
         topBar = {
             AndroidVersionListAppBar()
@@ -114,6 +126,6 @@ private fun Preview_AndroidVersionsListScreen(
     @PreviewParameter(AndroidVersionInfoProvider::class) infos: List<AndroidVersionInfo>
 ) {
     ComposeDemoTheme {
-        AndroidVersionsListScreen(infos, onClick = {})
+        AndroidVersionsListContent(infos, onClick = {})
     }
 }

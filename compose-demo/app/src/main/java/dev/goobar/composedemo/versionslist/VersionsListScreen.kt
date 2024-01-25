@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -42,14 +43,22 @@ fun AndroidVersionListAppBar() {
 fun AndroidVersionsListScreen(
     infos: List<AndroidVersionInfo>,
     onClick: (AndroidVersionInfo) -> Unit) {
-    LazyColumn(
-        contentPadding = PaddingValues(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+
+    Scaffold(
+        topBar = {
+            AndroidVersionListAppBar()
+        }
     ) {
-        items(
-            items = infos,
-            key = { info -> info.apiVersion }) { info ->
-            AndroidVersionInfoCard(info, onClick)
+        LazyColumn(
+            modifier = Modifier.padding(it),
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(
+                items = infos,
+                key = { info -> info.apiVersion }) { info ->
+                AndroidVersionInfoCard(info, onClick)
+            }
         }
     }
 }

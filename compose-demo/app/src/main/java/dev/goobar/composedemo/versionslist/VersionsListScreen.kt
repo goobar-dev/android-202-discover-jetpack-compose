@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package dev.goobar.composedemo.versionslist
 
@@ -10,11 +10,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.goobar.composedemo.R
 import dev.goobar.composedemo.data.AndroidVersionInfo
 import dev.goobar.composedemo.data.AndroidVersionsRepository
+import dev.goobar.composedemo.ui.config.ScreenConfiguration
 import dev.goobar.composedemo.ui.theme.ComposeDemoTheme
 import dev.goobar.composedemo.ui.tooling.StandardPreview
 
@@ -58,19 +60,23 @@ fun AndroidVersionListAppBar(onSortClick: () -> Unit) {
 
 @Composable
 fun AndroidVersionsListScreen(
+    screenConfiguration: ScreenConfiguration,
     viewModel: AndroidVersionsListViewModel = viewModel(),
     onClick: (AndroidVersionInfo) -> Unit) {
 
     val versionsListState by viewModel.state.collectAsStateWithLifecycle()
 
     AndroidVersionsListContent(
+        isVertical = screenConfiguration.orientation == ScreenConfiguration.Orientation.VERTICAL,
         viewItems = versionsListState.versionsList,
         onSortClick =  viewModel::onSortClicked,
-        onClick = onClick)
+        onClick = onClick
+    )
 }
 
 @Composable
 private fun AndroidVersionsListContent(
+    isVertical: Boolean = true,
     viewItems: List<AndroidVersionsListViewModel.State.AndroidVersionViewItem>,
     onSortClick: () -> Unit,
     onClick: (AndroidVersionInfo) -> Unit
@@ -80,16 +86,31 @@ private fun AndroidVersionsListContent(
             AndroidVersionListAppBar(onSortClick)
         }
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it),
-            contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            itemsIndexed(
-                items = viewItems,
-                key = { index, viewItem -> "$index ${viewItem.info.apiVersion}" }
-            ) { index, viewItem ->
-                AndroidVersionInfoCard(viewItem, onClick)
+        if (isVertical) {
+            LazyColumn(
+                modifier = Modifier.padding(it).fillMaxSize(1f),
+                contentPadding = PaddingValues(20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                itemsIndexed(
+                    items = viewItems,
+                    key = { index, viewItem -> "$index ${viewItem.info.apiVersion}" }
+                ) { index, viewItem ->
+                    AndroidVersionInfoCard(viewItem, onClick)
+                }
+            }
+        } else {
+            LazyRow(
+                modifier = Modifier.padding(it).fillMaxSize(1f),
+                contentPadding = PaddingValues(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                itemsIndexed(
+                    items = viewItems,
+                    key = { index, viewItem -> "$index ${viewItem.info.apiVersion}" }
+                ) { index, viewItem ->
+                    AndroidVersionInfoCard(viewItem, onClick)
+                }
             }
         }
     }
@@ -164,6 +185,6 @@ private fun Preview_AndroidVersionsListScreen(
     @PreviewParameter(AndroidVersionInfoProvider::class) infos: List<AndroidVersionInfo>
 ) {
     ComposeDemoTheme {
-        AndroidVersionsListContent(infos.map { it.toViewItem() }, onSortClick = {}, onClick = {})
+        AndroidVersionsListContent(viewItems = infos.map { it.toViewItem() }, onSortClick = {}, onClick = {})
     }
 }

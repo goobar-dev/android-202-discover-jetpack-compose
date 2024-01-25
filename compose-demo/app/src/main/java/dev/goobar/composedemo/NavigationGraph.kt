@@ -4,11 +4,8 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,22 +16,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.goobar.composedemo.data.AndroidVersionInfo
+import dev.goobar.composedemo.ui.config.ScreenConfiguration
 import dev.goobar.composedemo.versiondetails.AndroidVersionDetailsScreen
 import dev.goobar.composedemo.versiondetails.AndroidVersionDetailsViewModel
 import dev.goobar.composedemo.versionslist.AndroidVersionsListScreen
 
 
 @Composable
-internal fun ComposeDemoNavigationGraph(windowSizeClass: WindowSizeClass) {
-    if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
-        PhoneNavigationGraph()
+internal fun ComposeDemoNavigationGraph(screenConfiguration: ScreenConfiguration) {
+    if (screenConfiguration.isCompact || screenConfiguration.orientation == ScreenConfiguration.Orientation.VERTICAL) {
+        PhoneNavigationGraph(screenConfiguration)
     } else {
-        TabletNavigationGraph()
+        TabletNavigationGraph(screenConfiguration.copy(orientation = ScreenConfiguration.Orientation.VERTICAL))
     }
 }
 
 @Composable
-private fun TabletNavigationGraph() {
+private fun TabletNavigationGraph(screenConfiguration: ScreenConfiguration) {
     var selectedItem by rememberSaveable {
         mutableStateOf<AndroidVersionInfo?>(null)
     }
@@ -42,7 +40,7 @@ private fun TabletNavigationGraph() {
         modifier = Modifier.fillMaxSize(1f)
     ) {
         Box(modifier = Modifier.weight(1f)) {
-            AndroidVersionsListScreen { info ->
+            AndroidVersionsListScreen(screenConfiguration) { info ->
                 selectedItem = info
             }
         }
@@ -62,12 +60,12 @@ private fun TabletNavigationGraph() {
     }
 }
 
-@Composable fun PhoneNavigationGraph() {
+@Composable fun PhoneNavigationGraph(screenConfiguration: ScreenConfiguration) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = DemoNavigationDestinations.VersionsList.route) {
         composable(DemoNavigationDestinations.VersionsList.route) {
-            AndroidVersionsListScreen { info ->
+            AndroidVersionsListScreen(screenConfiguration) { info ->
                 navController.navigate(DemoNavigationDestinations.VersionDetails.createRouteWithArgs(info))
             }
         }

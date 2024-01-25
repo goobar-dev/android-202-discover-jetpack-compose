@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.windowSize)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization)
 

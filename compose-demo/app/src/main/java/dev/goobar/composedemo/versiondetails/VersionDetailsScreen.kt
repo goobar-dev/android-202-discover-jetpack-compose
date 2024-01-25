@@ -47,7 +47,8 @@ fun AndroidVersionDetailsAppBar(title: String, onBack: () -> Unit) {
 @Composable
 fun AndroidVersionDetailsScreen(
     viewModel: AndroidVersionDetailsViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    showTopBar: Boolean = true
 ) {
     BackHandler(enabled = true, onBack = onBack)
     val layoutDirection = LocalLayoutDirection.current
@@ -55,7 +56,9 @@ fun AndroidVersionDetailsScreen(
 
     Scaffold(
         topBar = {
-            AndroidVersionDetailsAppBar(state.title, onBack)
+            if (showTopBar) {
+                AndroidVersionDetailsAppBar(state.title, onBack)
+            }
         }
     ) {
         Column(

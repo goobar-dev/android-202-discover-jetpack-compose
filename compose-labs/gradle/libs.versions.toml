@@ -15,6 +15,7 @@ ktorClientCoreVersion = "2.3.7"
 ktorClientOkhttpVersion = "2.3.0"
 ktorSerializationKotlinxJsonVersion = "2.3.0"
 material3Version = "1.2.0-rc01"
+navigationComposeVersion = "2.5.3"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
@@ -31,6 +32,7 @@ androidx-compose-ui-preview = { module = "androidx.compose.ui:ui-tooling-preview
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 junit = { module = "junit:junit", version.ref = "junitVersion" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiationVersion" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCoreVersion" }

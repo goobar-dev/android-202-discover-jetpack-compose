@@ -1,5 +1,9 @@
 package dev.goobar.composelabs.domain
 
+import dev.goobar.composelabs.navigation.NavigationArgs
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Planet(
     val name: String,
     val rotationPeriod: Int,
@@ -9,4 +13,4 @@ data class Planet(
     val gravity: String,
     val population: String,
     val url: String
-)
+): NavigationArgs

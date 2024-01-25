@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
             ComposeLabsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
+                    Greeting("Hey", "Compose")
                 }
             }
         }
@@ -27,9 +27,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(greeting: String = "Hello", name: String = "World", modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = "$greeting $name!",
         modifier = modifier
     )
 }

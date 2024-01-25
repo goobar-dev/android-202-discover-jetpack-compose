@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.compose.material3.windowSize)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization)
+    implementation(libs.kotlinx.immutable)
 
     testImplementation(libs.junit)
 

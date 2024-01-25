@@ -12,6 +12,7 @@ junit = "1.1.5"
 junitVersion = "4.13.2"
 composeNavigationVersion = "2.7.6"
 kotlinSerializationVersion = "1.6.2"
+kotlinImmutableCollectionsVersion = "0.3.5"
 material3WindowSizeClassVersion = "1.1.2"
 
 [libraries]
@@ -32,6 +33,7 @@ androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigationVersion"}
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinSerializationVersion" }
+kotlinx-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinImmutableCollectionsVersion" }
 
 junit = { module = "junit:junit", version.ref = "junitVersion" }
 

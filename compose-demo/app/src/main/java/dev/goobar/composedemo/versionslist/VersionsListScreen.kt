@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +47,8 @@ import dev.goobar.composedemo.data.AndroidVersionsRepository
 import dev.goobar.composedemo.ui.config.ScreenConfiguration
 import dev.goobar.composedemo.ui.theme.ComposeDemoTheme
 import dev.goobar.composedemo.ui.tooling.StandardPreview
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun AndroidVersionListAppBar(onSortClick: () -> Unit) {
@@ -78,7 +81,7 @@ fun AndroidVersionsListScreen(
 @Composable
 private fun AndroidVersionsListContent(
     isVertical: Boolean = true,
-    viewItems: List<AndroidVersionsListViewModel.State.AndroidVersionViewItem>,
+    viewItems: ImmutableList<AndroidVersionsListViewModel.State.AndroidVersionViewItem>,
     onSortClick: () -> Unit,
     onClick: (AndroidVersionInfo) -> Unit
 ) {
@@ -93,10 +96,9 @@ private fun AndroidVersionsListContent(
                 contentPadding = PaddingValues(20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                itemsIndexed(
+                items(
                     items = viewItems,
-                    key = { index, viewItem -> "$index ${viewItem.info.apiVersion}" }
-                ) { index, viewItem ->
+                ) { viewItem ->
                     AndroidVersionInfoCard(viewItem, onClick)
                 }
             }
@@ -106,10 +108,9 @@ private fun AndroidVersionsListContent(
                 contentPadding = PaddingValues(20.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                itemsIndexed(
+                items(
                     items = viewItems,
-                    key = { index, viewItem -> "$index ${viewItem.info.apiVersion}" }
-                ) { index, viewItem ->
+                ) { viewItem ->
                     AndroidVersionInfoCard(viewItem, onClick)
                 }
             }
@@ -186,6 +187,6 @@ private fun Preview_AndroidVersionsListScreen(
     @PreviewParameter(AndroidVersionInfoProvider::class) infos: List<AndroidVersionInfo>
 ) {
     ComposeDemoTheme {
-        AndroidVersionsListContent(viewItems = infos.map { it.toViewItem() }, onSortClick = {}, onClick = {})
+        AndroidVersionsListContent(viewItems = infos.map { it.toViewItem() }.toImmutableList(), onSortClick = {}, onClick = {})
     }
 }
